@@ -91,7 +91,7 @@ func main() {
 
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": "invalid query paraneter",
+					"error": "invalid query parameter",
 				})
 
 				return
@@ -102,6 +102,19 @@ func main() {
 			if uuid == user.ID {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"error": "you cannot follow youself",
+				})
+
+				return
+			}
+
+			if dbctx.
+				Table("users").
+				Where("users.id = ?", uuid).
+				First(&database.User{}).
+				RecordNotFound() {
+
+				c.JSON(http.StatusNotFound, gin.H{
+					"error": "user is not exist",
 				})
 
 				return
