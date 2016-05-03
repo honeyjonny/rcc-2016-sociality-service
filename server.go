@@ -7,6 +7,7 @@ import (
 	"github.com/honeyjonny/sociality/middleware"
 	"github.com/jinzhu/gorm"
 	"net/http"
+	"strconv"
 	_ "time"
 )
 
@@ -22,6 +23,7 @@ func main() {
 	router := gin.Default()
 
 	router.Static("/public/css/", "./public/css/")
+	router.Static("/public/img/", "./public/img/")
 
 	router.LoadHTMLGlob("./templates/*")
 
@@ -39,7 +41,7 @@ func main() {
 
 			dbctx := c.MustGet("dbcontext").(*gorm.DB)
 
-			dbctx.
+			dbctx.Debug().
 				Table("users").
 				Select("user_name as username, created_at as created").
 				Scan(&usrDtos)
@@ -59,7 +61,7 @@ func main() {
 
 			dbctx := c.MustGet("dbcontext").(*gorm.DB)
 
-			dbctx.
+			dbctx.Debug().
 				Table("posts").
 				Joins("inner join users on users.id = posts.user_id").
 				Where("users.id = ?", user.ID).
@@ -71,6 +73,81 @@ func main() {
 				"title":    "Home page",
 				"username": user.UserName,
 				"posts":    posts,
+			})
+		}
+	})
+
+	authorized.GET("/friends", func(c *gin.Context) {
+
+		dbctx := c.MustGet("dbcontext").(*gorm.DB)
+
+		id, isquery := c.GetQuery("add")
+
+		user, exists := middleware.GetUserFromGinContext(c)
+
+		if isquery && (len(id) > 0) && exists {
+
+			uid, err := strconv.ParseInt(id, 0, 64)
+
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "invalid query paraneter",
+				})
+
+				return
+			}
+
+			uuid := uint(uid)
+
+			if uuid == user.ID {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "you cannot follow youself",
+				})
+
+				return
+			}
+
+			newFollower := database.Follower{
+				ObjectID:  user.ID,
+				SubjectID: uuid,
+			}
+
+			notAlreadyFollow :=
+				dbctx.
+					Where(&newFollower).
+					First(&database.Follower{}).
+					RecordNotFound()
+
+			if !notAlreadyFollow {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "you already follow this user",
+				})
+
+				return
+			}
+
+			dbctx.Create(&newFollower)
+
+			c.Header("Location", "/friends")
+			c.JSON(http.StatusSeeOther, gin.H{
+				"success": "user added to friends",
+			})
+		}
+
+		if exists && !isquery {
+
+			var userDtos []middleware.UserDTO
+
+			dbctx.Debug().
+				Table("followers").
+				Joins("inner join users on users.id = followers.subject_id").
+				Where("followers.object_id = ?", user.ID).
+				Order("users.created_at desc").
+				Select("users.user_name as username, users.created_at as created").
+				Scan(&userDtos)
+
+			c.JSON(http.StatusOK, gin.H{
+				"friends": userDtos,
 			})
 		}
 	})
@@ -222,12 +299,12 @@ func main() {
 
 			} else {
 
-				session, timestamp := middleware.CreateSessionForUser(dbUser)
+				session := middleware.CreateSessionForUser(dbUser)
 
-				dbctx.
-					Table("sessions").
-					Where(&database.Session{UserID: dbUser.ID}).
-					Delete(database.Session{})
+				/*				dbctx.
+								Table("sessions").
+								Where(&database.Session{UserID: dbUser.ID}).
+								Delete(database.Session{})*/
 
 				dbctx.
 					Unscoped().
@@ -242,8 +319,7 @@ func main() {
 
 				c.Header("Location", "/home")
 				c.JSON(http.StatusFound, gin.H{
-					"logined":   dbUser.UserName,
-					"timestamp": timestamp,
+					"logined": dbUser.UserName,
 				})
 
 				return
@@ -262,7 +338,7 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Default Social Network",
+			"title": "Typical Social Network",
 			"body":  "Social network for you and your colleagues!",
 		})
 	})

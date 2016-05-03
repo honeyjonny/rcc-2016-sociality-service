@@ -2,7 +2,7 @@
 <html>
 <head>
 	{{ template "load-boot" }}
-	<title>{{ .title}}</title>
+	<title>{{ .title }}</title>
 </head>
 <body>
 
@@ -15,8 +15,13 @@
 				<li role="presentation" style="float: right;"><a href="/register">Register</a></li>
 		    </ul>
 
-			<h2>{{ .title }}</h2>
-			<div class="well">{{ .body }}</div>			
+		    <div style="text-align: center;">
+				<h2>{{ .title }}</h2>
+				<div>
+					<img style="padding-bottom: 15px; padding-top: 10px" src="/public/img/net.png">
+				</div>
+				<div class="well">{{ .body }}</div>			
+			</div>
 		</div>
 
 	</div>
