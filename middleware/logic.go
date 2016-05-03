@@ -6,7 +6,7 @@ import (
 	_ "fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/gin-gonic/gin/binding"
-	"github.com/honeyjonny/undesirereso/database"
+	"github.com/honeyjonny/sociality/database"
 	"github.com/jinzhu/gorm"
 	"net/http"
 	"time"

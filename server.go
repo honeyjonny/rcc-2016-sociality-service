@@ -3,8 +3,8 @@ package main
 import (
 	_ "fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/honeyjonny/undesirereso/database"
-	"github.com/honeyjonny/undesirereso/middleware"
+	"github.com/honeyjonny/sociality/database"
+	"github.com/honeyjonny/sociality/middleware"
 	"github.com/jinzhu/gorm"
 	"net/http"
 	_ "time"
@@ -14,7 +14,7 @@ func main() {
 
 	dbconfig := database.DbConfig{
 		Dialect:          "postgres",
-		ConnectionString: "user=hj dbname=undesire password=hJ073 sslmode=disable",
+		ConnectionString: "user=sadm dbname=social password=ChangeThis sslmode=disable",
 	}
 
 	gin.SetMode(gin.ReleaseMode)
@@ -107,15 +107,15 @@ func main() {
 		}
 	})
 
-	/*	authorized.GET("/logout", func(c *gin.Context) {
+	authorized.GET("/logout", func(c *gin.Context) {
 		if user, exists := middleware.GetUserFromGinContext(c); exists {
 
 			dbctx := c.MustGet("dbcontext").(*gorm.DB)
 
-			dbctx.
-				Table("sessions").
-				Where(&database.Session{UserID: user.ID}).
-				Delete(database.Session{})
+			/*			dbctx.
+						Table("sessions").
+						Where(&database.Session{UserID: user.ID}).
+						Delete(database.Session{})*/
 
 			dbctx.
 				Unscoped().
@@ -128,12 +128,12 @@ func main() {
 				"logout": user.UserName,
 			})
 		}
-	})*/
+	})
 
 	router.GET("/register", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "register.tmpl", gin.H{
 			"title": "Register form",
-			"body":  "Perform a register",
+			"body":  "Register, please",
 		})
 
 	})
@@ -190,7 +190,7 @@ func main() {
 	router.GET("/login", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.tmpl", gin.H{
 			"title": "Login form",
-			"body":  "Perform a login",
+			"body":  "Login, please",
 		})
 
 	})
@@ -262,8 +262,8 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Tech resource",
-			"body":  "Awsome ai-bot network",
+			"title": "Default Social Network",
+			"body":  "Social network for you and your colleagues!",
 		})
 	})
 

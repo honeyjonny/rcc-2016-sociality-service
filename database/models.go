@@ -22,3 +22,16 @@ type Session struct {
 	Cookie string `sql:"unique_index"`
 	UserID uint   `sql:"index"`
 }
+
+type Follower struct {
+	gorm.Model
+	ObjectID  uint `sql:"index"`
+	SubjectID uint `sql:"index"`
+}
+
+type Message struct {
+	gorm.Model
+	ObjectID  uint   `sql:"index"`
+	SubjectID uint   `sql:"index"`
+	Text      string `sql:"size:255"`
+}

@@ -15,7 +15,7 @@ type DbConfig struct {
 
 func (config *DbConfig) CreateConnection() *gorm.DB {
 
-	db, err := gorm.Open(config.Dialect, config.ConnectionString) //"postgres", "user=hj dbname=undesire password=hJ073 sslmode=disable")
+	db, err := gorm.Open(config.Dialect, config.ConnectionString)
 
 	db.SetLogger(log.New(os.Stdout, "\r\n", 0))
 
@@ -36,9 +36,17 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Post{})
 	db.AutoMigrate(&Session{})
+	db.AutoMigrate(&Follower{})
+	db.AutoMigrate(&Message{})
 }
 
 func set_constraints(db *gorm.DB) {
 	db.Model(&Session{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	db.Model(&Post{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+
+	db.Model(&Follower{}).AddForeignKey("object_id", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&Follower{}).AddForeignKey("subject_id", "users(id)", "CASCADE", "CASCADE")
+
+	db.Model(&Message{}).AddForeignKey("object_id", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&Message{}).AddForeignKey("subject_id", "users(id)", "CASCADE", "CASCADE")
 }
