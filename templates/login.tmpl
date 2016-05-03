@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{{ template "load-boot" }}
+	<title> {{ .title }}</title>
+</head>
+<body>
+	<div class="container">
+
+		<div style="max-width: 640px;  padding: 15px;  margin: 0 auto;">
+
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" style="float: left;"><a href="/">Main</a></li>
+				<li role="presentation" style="float: right;"><a href="/login">Login</a></li>
+				<li role="presentation" style="float: right;"><a href="/register">Register</a></li>
+		    </ul>
+		</div>
+
+		<div style="max-width: 330px;  padding: 15px;  margin: 0 auto;">
+
+			<h3>{{ .body }}</h3>
+			<form action="/login" method="post">
+				<input class="form-control" type="text" name="username" placeholder="username"/>
+				<input class="form-control" type="text" name="password" placeholder="password" />
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

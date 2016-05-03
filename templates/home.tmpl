@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{{ template "load-boot" }}
+	<title> {{ .title }}</title>
+</head>
+<body>
+
+	<div class="container">
+
+		<div style="max-width: 640px;  padding: 15px;  margin: 0 auto;">
+			
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" style="float: right;"><a href="/users">See others</a></li>
+				<li role="presentation" style="float: right;"><a href="/logout">Logout</a></li>
+		    </ul>
+
+		    <div style="margin-top: 10px">
+				<h3><span class="label label-info">{{ .username }}</span> </h3>	
+			</div>
+		
+			<form action="/posts" method="post">
+				<textarea 	type="text" 
+							name="content" 
+							rows="3" 
+							placeholder="new post content"
+							style="width: 600px; border-color: #ddd; border-radius: 3px;  margin-top: 20px">
+							</textarea>
+				<button type="submit" class="btn btn-info" style="float: right; margin-top: 15px">Say</button>
+			</form>
+
+			<div class="list-group" style="margin-top: 70px">
+			{{ range .posts}}
+
+				<div class="row list-group-item">
+					<h4 class="list-group-item-text">{{ .Content }}</p>
+					<h6 class="list-group-item-text"> {{ .Created }}</p>
+				</div>
+
+			{{ end }}
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>
