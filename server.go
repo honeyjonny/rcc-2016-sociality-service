@@ -43,7 +43,7 @@ func main() {
 
 			dbctx.Debug().
 				Table("users").
-				Select("user_name as username, created_at as created").
+				Select("id as uid, user_name as username, created_at as created").
 				Scan(&usrDtos)
 
 			c.HTML(http.StatusOK, "users.tmpl", gin.H{
@@ -156,10 +156,11 @@ func main() {
 				Joins("inner join users on users.id = followers.subject_id").
 				Where("followers.object_id = ?", user.ID).
 				Order("users.created_at desc").
-				Select("users.user_name as username, users.created_at as created").
+				Select("users.id as uid, users.user_name as username, users.created_at as created").
 				Scan(&userDtos)
 
-			c.JSON(http.StatusOK, gin.H{
+			c.HTML(http.StatusOK, "friends.tmpl", gin.H{
+				"title":   "Friends",
 				"friends": userDtos,
 			})
 		}

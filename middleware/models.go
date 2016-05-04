@@ -12,6 +12,7 @@ type PostForm struct {
 }
 
 type UserDTO struct {
+	Uid      uint      `json:"uid"`
 	Username string    `json:"username"`
 	Created  time.Time `json:"created"`
 }
