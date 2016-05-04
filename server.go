@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/honeyjonny/sociality/database"
 	"github.com/honeyjonny/sociality/middleware"
@@ -163,6 +163,90 @@ func main() {
 				"title":   "Friends",
 				"friends": userDtos,
 			})
+		}
+	})
+
+	authorized.GET("/messages", func(c *gin.Context) {
+
+		dbctx := c.MustGet("dbcontext").(*gorm.DB)
+
+		id, isquery := c.GetQuery("pm")
+
+		user, exists := middleware.GetUserFromGinContext(c)
+
+		if isquery && (len(id) > 0) && exists {
+
+			var messageDtos []middleware.MessageDTO
+
+			dbctx.Debug().
+				Table("messages").
+				Where("object_id = ? and subject_id = ?", user.ID, id).
+				Order("created_at asc").
+				Select("created_at as created, text as message").
+				Scan(&messageDtos)
+
+			c.HTML(http.StatusOK, "messages.tmpl", gin.H{
+				"title":    "PM",
+				"uid":      id,
+				"messages": messageDtos,
+			})
+
+		} else {
+			c.Header("Location", "/friends")
+			c.JSON(http.StatusSeeOther, gin.H{
+				"error": "got arguments or life!",
+			})
+		}
+	})
+
+	authorized.POST("/messages", func(c *gin.Context) {
+
+		dbctx := c.MustGet("dbcontext").(*gorm.DB)
+
+		if user, exists := middleware.GetUserFromGinContext(c); exists {
+
+			var newMessage middleware.MessageForm
+
+			if c.Bind(&newMessage) == nil {
+
+				value, _ := strconv.ParseUint(newMessage.Uid, 0, 64)
+
+				uuid := uint(value)
+
+				if dbctx.
+					Table("users").
+					Where("users.id = ?", uuid).
+					First(&database.User{}).
+					RecordNotFound() {
+
+					c.JSON(http.StatusNotFound, gin.H{
+						"error": "user is not exist",
+					})
+
+					return
+				}
+
+				msg := database.Message{
+					ObjectID:  user.ID,
+					SubjectID: uuid,
+					Text:      newMessage.Message,
+				}
+
+				dbctx.Create(&msg)
+
+				href := fmt.Sprintf("/messages?pm=%s", newMessage.Uid)
+				c.Header("Location", href)
+				c.JSON(http.StatusSeeOther, gin.H{
+					"id":      msg.ID,
+					"created": msg.CreatedAt,
+				})
+
+			} else {
+
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "form invalid",
+				})
+			}
 		}
 	})
 

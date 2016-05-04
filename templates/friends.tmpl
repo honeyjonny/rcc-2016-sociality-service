@@ -12,6 +12,7 @@
 			
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" style="float: right;"><a href="/logout">Logout</a></li>
+				<li role="presentation" style="float: right;"><a href="/users">Users</a></li>
 				<li role="presentation" style="float: right;"><a href="/home">Home</a></li>				
 		    </ul>
 
@@ -19,8 +20,14 @@
 			{{ range .friends }}
 
 				<div class="row list-group-item">
-					<h4 class="list-group-item-text col-md-8">{{ .Username }}</h4>
-					<h6 class="list-group-item-text col-md-8">{{ .Created }}</h6>
+					<div class="list-group-item-text col-md-8">
+						<h4>{{ .Username }}</h4>
+						<h6>{{ .Created }}</h6>
+					</div>
+					<div class="list-group-item-text col-md-2" 
+						 style="float: right; text-align: center; margin-top: 14px;">
+						<a href="/messages?pm={{ .Uid }}" class="btn btn-success">Chat</a>
+					</div>
 				</div>
 
 			{{end}}

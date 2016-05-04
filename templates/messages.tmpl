@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{{ template "load-boot" }}
+	<title> {{ .title }}</title>
+</head>
+<body>
+
+	<div class="container">
+
+		<div style="max-width: 640px;  padding: 15px;  margin: 0 auto;">
+			
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" style="float: right;"><a href="/logout">Logout</a></li>
+				<li role="presentation" style="float: right;"><a href="/users">Users</a></li>
+				<li role="presentation" style="float: right;"><a href="/friends">Friends</a></li>
+				<li role="presentation" style="float: right;"><a href="/home">Home</a></li>				
+		    </ul>
+
+		    <div class="list-group" style="margin-top: 60px">
+				<div class="row list-group-item" style="overflow: auto; height: 370px;">
+				{{ range .messages }}
+
+					<div class="message">
+						<p>{{ .Message }}</p>
+					</div>
+
+				{{ end }}
+				</div>
+
+				<form action="/messages" method="post">
+					<input type="hidden" name="uid" value="{{ .uid }}" />
+					<textarea 	type="text" 
+								name="message" 
+								rows="3" 
+								placeholder="something want to say?"
+								style="width: 600px; border-color: #ddd; border-radius: 3px;  margin-top: 20px; height: 70px">
+								</textarea>
+					<button type="submit" class="btn btn-primary" style="float: right; margin-top: 15px">PM</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<style type="text/css">
+		.message {
+		    background: rgba(91,192,222,0.3);
+		    border-color: #ddd;
+		    border-radius: 3px;
+		    margin-top: 5px;
+		}
+	</style>
+</body>
+</html>

@@ -7,6 +7,11 @@ type LoginForm struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
+type MessageForm struct {
+	Uid     string `form:"uid" json:"uid" binding:"required"`
+	Message string `form:"message" json:"message" binding:"required"`
+}
+
 type PostForm struct {
 	Content string `form:"content" json:"content" binding:"required"`
 }
@@ -20,4 +25,9 @@ type UserDTO struct {
 type PostDTO struct {
 	Created time.Time `json:"created"`
 	Content string    `json:"content"`
+}
+
+type MessageDTO struct {
+	Created time.Time `json:"created"`
+	Message string    `json:"message"`
 }
