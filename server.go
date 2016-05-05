@@ -347,7 +347,7 @@ func main() {
 
 				c.Header("Location", "/login")
 				c.JSON(http.StatusSeeOther, gin.H{
-					"registered": dbUser,
+					"registered": dbUser.UserName,
 				})
 
 			}
