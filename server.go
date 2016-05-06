@@ -144,6 +144,7 @@ func main() {
 			c.Header("Location", "/friends")
 			c.JSON(http.StatusSeeOther, gin.H{
 				"success": "user added to friends",
+				"uid":     uuid,
 			})
 		}
 
