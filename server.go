@@ -288,11 +288,6 @@ func main() {
 
 			dbctx := c.MustGet("dbcontext").(*gorm.DB)
 
-			/*			dbctx.
-						Table("sessions").
-						Where(&database.Session{UserID: user.ID}).
-						Delete(database.Session{})*/
-
 			dbctx.
 				Unscoped().
 				Table("sessions").
@@ -399,11 +394,6 @@ func main() {
 			} else {
 
 				session := middleware.CreateSessionForUser(dbUser)
-
-				/*				dbctx.
-								Table("sessions").
-								Where(&database.Session{UserID: dbUser.ID}).
-								Delete(database.Session{})*/
 
 				dbctx.
 					Unscoped().
