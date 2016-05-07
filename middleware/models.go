@@ -31,3 +31,13 @@ type MessageDTO struct {
 	Created time.Time `json:"created"`
 	Message string    `json:"message"`
 }
+
+type NodeDTO struct {
+	Id    uint   `json:"id"`
+	Label string `json:"label"`
+}
+
+type LinkDTO struct {
+	From uint `json:"from"`
+	To   uint `json:"to"`
+}

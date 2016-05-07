@@ -24,6 +24,7 @@ func main() {
 
 	router.Static("/public/css/", "./public/css/")
 	router.Static("/public/img/", "./public/img/")
+	router.Static("/public/js/", "./public/js/")
 
 	router.LoadHTMLGlob("./templates/*")
 
@@ -422,6 +423,34 @@ func main() {
 
 			return
 		}
+	})
+
+	router.GET("/datasource", func(c *gin.Context) {
+
+		dbctx := c.MustGet("dbcontext").(*gorm.DB)
+
+		var nodes []middleware.NodeDTO
+		var edges []middleware.LinkDTO
+
+		dbctx.
+			Table("users").
+			Select("id as id, user_name as label").
+			Scan(&nodes)
+
+		dbctx.
+			Table("followers").
+			Select("object_id as from, subject_id as to").
+			Scan(&edges)
+
+		c.JSON(http.StatusOK, gin.H{
+			"nodes": nodes,
+			"edges": edges,
+		})
+
+	})
+
+	router.GET("/net", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "network.tmpl", gin.H{})
 	})
 
 	router.GET("/", func(c *gin.Context) {

@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <title>Network Map</title>
+
+  <script type="text/javascript" src="/public/js/vis.js"></script>
+  <link type="text/css" rel="stylesheet" href="/public/css/vis.css" />
+
+  <style type="text/css">
+    #mynetwork {
+      width: 100%;
+      height: 650px;
+      border: 1px solid lightgray;
+    }
+  </style>
+</head>
+<body>
+
+<div id="mynetwork"></div> 
+
+<script type="text/javascript">
+
+  function httpGetAsync(theUrl, callback)
+  {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function() { 
+          if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+              callback(xmlHttp.responseText);
+      }
+      xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+      xmlHttp.send(null);
+  }
+
+  function drawNetwork(netData){
+
+    var net = JSON.parse(netData);
+
+    var nodes = new vis.DataSet( net.nodes );
+
+    var edges = new vis.DataSet( net.edges );
+
+    var container = document.getElementById('mynetwork');
+
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+
+    var options = {  
+      height: '100%',
+      width: '100%',
+      layout: { improvedLayout:false },
+      physics: { 
+        stabilization: false,
+        "barnesHut": {
+          "centralGravity": 0.25,
+          "springLength": 150,
+          "springConstant": 0.555,
+          "damping": 0.1,
+          "avoidOverlap": 0.7
+        },
+      },
+      nodes: {
+        shape: 'dot',
+      },
+      edges: {
+        width: 2,
+        smooth:{ type:'continuous'},
+      },
+    };
+
+    var network = new vis.Network(container, data, options);
+  }
+
+  httpGetAsync("/datasource", drawNetwork);
+</script>
+</body>
+</html>
