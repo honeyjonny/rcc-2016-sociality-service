@@ -182,7 +182,7 @@ func main() {
 
 			dbctx.Debug().
 				Table("messages").
-				Where("object_id = ? and subject_id = ?", user.ID, id).
+				Where(fmt.Sprintf("subject_id = %s and object_id = %d", id, user.ID)).
 				Order("created_at asc").
 				Select("created_at as created, text as message").
 				Scan(&messageDtos)
@@ -301,6 +301,30 @@ func main() {
 			repost := database.Repost{
 				UserID: user.ID,
 				PostID: postid,
+			}
+
+			if dbctx.
+				Table("posts").
+				Where("id = ?", postid).
+				First(&database.Post{}).
+				RecordNotFound() {
+				c.JSON(http.StatusNotFound, gin.H{
+					"error": "not that post",
+				})
+
+				return
+			}
+
+			if !dbctx.
+				Table("reposts").
+				Where(&repost).
+				First(&database.Repost{}).
+				RecordNotFound() {
+				c.JSON(http.StatusFound, gin.H{
+					"error": "you already repost this",
+				})
+
+				return
 			}
 
 			dbctx.Create(&repost)
