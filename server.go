@@ -64,8 +64,8 @@ func main() {
 
 			dbctx.Debug().
 				Table("posts").
-				Joins("inner join users on users.id = posts.user_id").
-				Where("users.id = ?", user.ID).
+				Where("posts.user_id = ?", user.ID).
+				Or("posts.id in (select reposts.post_id from reposts where reposts.user_id = ?)", user.ID).
 				Order("posts.created_at desc").
 				Select("posts.created_at as created, posts.text as content").
 				Scan(&posts)
@@ -272,7 +272,7 @@ func main() {
 
 				c.Header("Location", "/home")
 				c.JSON(http.StatusSeeOther, gin.H{
-					"created": dbPost,
+					"created": dbPost.ID,
 				})
 
 			} else {
@@ -281,6 +281,34 @@ func main() {
 					"error": "form invalid",
 				})
 			}
+		}
+	})
+
+	authorized.GET("/posts", func(c *gin.Context) {
+
+		dbctx := c.MustGet("dbcontext").(*gorm.DB)
+
+		id, isquery := c.GetQuery("repost")
+
+		user, exists := middleware.GetUserFromGinContext(c)
+
+		if isquery && (len(id) > 0) && exists {
+
+			value, _ := strconv.ParseUint(id, 0, 64)
+
+			postid := uint(value)
+
+			repost := database.Repost{
+				UserID: user.ID,
+				PostID: postid,
+			}
+
+			dbctx.Create(&repost)
+
+			c.Header("Location", "/home")
+			c.JSON(http.StatusSeeOther, gin.H{
+				"created": repost.ID,
+			})
 		}
 	})
 

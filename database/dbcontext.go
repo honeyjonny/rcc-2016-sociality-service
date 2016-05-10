@@ -38,6 +38,7 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Session{})
 	db.AutoMigrate(&Follower{})
 	db.AutoMigrate(&Message{})
+	db.AutoMigrate(&Repost{})
 }
 
 func set_constraints(db *gorm.DB) {
@@ -49,4 +50,7 @@ func set_constraints(db *gorm.DB) {
 
 	db.Model(&Message{}).AddForeignKey("object_id", "users(id)", "CASCADE", "CASCADE")
 	db.Model(&Message{}).AddForeignKey("subject_id", "users(id)", "CASCADE", "CASCADE")
+
+	db.Model(&Repost{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&Repost{}).AddForeignKey("post_id", "posts(id)", "CASCADE", "CASCADE")
 }

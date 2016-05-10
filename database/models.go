@@ -35,3 +35,9 @@ type Message struct {
 	SubjectID uint   `sql:"index"`
 	Text      string `sql:"size:255"`
 }
+
+type Repost struct {
+	gorm.Model
+	UserID uint `sql:"index"`
+	PostID uint `sql:"index"`
+}
