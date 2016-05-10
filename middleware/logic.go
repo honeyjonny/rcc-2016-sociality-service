@@ -21,12 +21,10 @@ func SetDbContext(dbcontext *gorm.DB) gin.HandlerFunc {
 
 func CreateSessionForUser(user database.User) database.Session {
 
-	var secretSalt = "aFEA57dflkvfa854234asSFJKBFdafFADlkjkWDVLK4654DFGHWgjkjd"
-
-	timestamp := timeToString(time.Now())
+	timestamp := timeToString(user.CreatedAt)
 
 	session := database.Session{
-		Cookie: getMD5Hash(user.UserName + secretSalt + timestamp),
+		Cookie: getMD5Hash(user.UserName + timestamp),
 		UserID: user.ID,
 	}
 
