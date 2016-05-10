@@ -272,7 +272,7 @@ func main() {
 
 				c.Header("Location", "/home")
 				c.JSON(http.StatusSeeOther, gin.H{
-					"created": dbPost.ID,
+					"created": dbPost,
 				})
 
 			} else {
