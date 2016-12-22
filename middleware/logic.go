@@ -3,10 +3,9 @@ package middleware
 import (
 	"crypto/md5"
 	"encoding/hex"
-	_ "fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/gin-gonic/gin/binding"
-	"github.com/honeyjonny/sociality/database"
+	"rcc-2016-sociality-service/database"
 	"github.com/jinzhu/gorm"
 	"net/http"
 	"time"

@@ -1,32 +1,33 @@
 
-simple application that emulates social network behaviour
+# rcc-2016-sociality-service
+
+Simple application that emulates social network behaviour
 
 with three vulnerabilities :)
 
 
-application use:
+## Application use:
 
 	postgress = 9.4v
 
 
-golang libraries:
+### Golang libraries:
 
 	gin
 	gorm
+	github.com/lib/pq
 
 
-application install:
+### Install:
 
-	1. install golang tree
-
-	2. go get -u "github.com/gin-gonic/gin"
-	3. go get -u "github.com/jinzhu/gorm"
-
-	4. go to the folder where located server.go, in that folder
-
-	5. go install ./middleware
-	6. go install ./database
-
-	7. go build server.go
-
-	8. run
+1. Clone this repository in ```$GOPATH/src/```
+2. Install dependency
+    ``` go get -u "github.com/gin-gonic/gin" ```
+    ``` go get -u "github.com/jinzhu/gorm" ```
+    ``` go get -u "github.com/lib/pq" ```
+3. Build / Run
+    * Build
+    ``` go build server.go ```
+    ```./server ```
+    * or run
+    ``` go run server.go ```
