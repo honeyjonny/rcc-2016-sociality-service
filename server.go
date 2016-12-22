@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/honeyjonny/sociality/database"
-	"github.com/honeyjonny/sociality/middleware"
+	"rcc-2016-sociality-service/database"
+	"rcc-2016-sociality-service/middleware"
 	"github.com/jinzhu/gorm"
 	"net/http"
 	"strconv"
@@ -15,7 +15,7 @@ func main() {
 
 	dbconfig := database.DbConfig{
 		Dialect:          "postgres",
-		ConnectionString: "user=sadm dbname=social password=ChangeThis sslmode=disable",
+		ConnectionString: "host=localhost port=5432 user=sadm dbname=social password=ChangeThis sslmode=disable",
 	}
 
 	gin.SetMode(gin.ReleaseMode)
